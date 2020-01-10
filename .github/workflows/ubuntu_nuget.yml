@@ -9,12 +9,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v1
-    - name: Build with dotnet
-      run: dotnet build --configuration Release --version-suffix prerelease-$(date +%Y%m%d%H%M%S)
+    - name: Build solution and generate NuGet package
+      run: |  
+          cd FileManager
+          dotnet pack -c Release -o out  
       shell: bash
     - name: Publish nuget
       run: |
-           for f in ./[repository]/bin/Release/*.nupkg
+           for f in D:\a\FileManager\FileManager\FileManager\out\*.nupkg
            do
              curl -vX PUT -u "[user]:${{ secrets.FILEMANAGER }}" -F package=@$f https://nuget.pkg.github.com/murunwas/
            done
