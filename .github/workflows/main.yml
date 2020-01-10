@@ -29,7 +29,7 @@ jobs:
         uses: warrenbuckley/Setup-Nuget@v1
 
       - name: Add private GitHub registry to NuGet
-        run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/murunwas/index.json -Username murunwas -Password ${{ secrets.FILEMANAGER }}
+        run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/murunwas/index.json -setApiKey ${{ secrets.FILEMANAGER }}
 
       - name: Push generated package to GitHub registry
         run: nuget push D:\a\FileManager\FileManager\FileManager\out\*.nupkg -Source "GPR" -SkipDuplicate
