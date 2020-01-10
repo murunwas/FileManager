@@ -1,0 +1,60 @@
+name: "Build and Deploy"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    if: github.event_name == 'push' && contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
+    name: Build Package
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.100
+
+    - name: Restore
+      run: dotnet restore FileManager
+
+    - name: Build
+      run: dotnet build FileManager --configuration Release --no-restore
+
+    - name: Pack
+      run: dotnet pack FileManager --configuration Release -o finalpackage --no-build
+
+    # sign the NuGet Package -- can't do this without nuget.exe as dotnet CLI doesn't expose that
+    - name: Publish artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: nupkg
+        path: finalpackage
+
+  deploy:
+    needs: build
+    name: Deploy Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Package artifact
+        uses: actions/download-artifact@master
+        with:
+          name: nupkg
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.2
+        with:
+         nuget-api-key: ${{ secrets.FILEMANAGER }}
+         nuget-version: latest
+
+      - name: Setup NuGet GPR
+        run: nuget source Add -Name "GPR" -Source ${{ secrets.GPRURL }} -UserName ${{ secrets.GITHUBUSERNAME }} -Password ${{ secrets.GITHUBTOKEN }}
+
+      - name: Set Nuget key
+        run: nuget setApiKey ${{ secrets.FILEMANAGER }} -Source "GPR"
+
+      - name: Push to GPR
+        run: nuget push nupkg/*.nupkg -Source "GPR" -SkipDuplicate
