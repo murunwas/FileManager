@@ -22,7 +22,7 @@ jobs:
 
       - name: Build solution and generate NuGet package
         run: |  
-          cd SOLUTION_FOLDER
+          cd FileManager
           dotnet pack -c Release -o out  
 
       - name: Install NuGet client
@@ -32,4 +32,4 @@ jobs:
         run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/murunwas/index.json -Username murunwas -Password ${{ secrets.FILEMANAGER }}
 
       - name: Push generated package to GitHub registry
-        run: nuget push .\SOLUTION_FOLDER\PROJECT_FOLDER\out\*.nupkg -Source "GPR" -SkipDuplicate
+        run: nuget push .\FileManager\PROJECT_FOLDER\out\*.nupkg -Source "GPR" -SkipDuplicate
