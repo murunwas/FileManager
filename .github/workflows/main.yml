@@ -26,10 +26,12 @@ jobs:
           dotnet pack -c Release -o out  
 
       - name: Install NuGet client
-        uses: warrenbuckley/Setup-Nuget@v1
-
-      - name: Add private GitHub registry to NuGet
-        run: nuget sources add -name "GPR" -Source https://nuget.pkg.github.com/murunwas/index.json -setApiKey ${{ secrets.FILEMANAGER }}
-
-      - name: Push generated package to GitHub registry
-        run: nuget push D:\a\FileManager\FileManager\FileManager\out\*.nupkg -Source "GPR" -SkipDuplicate
+        uses: nuget/setup-nuget@v1
+        with:
+         nuget-api-key: ${{ secrets.FILEMANAGER }}
+         nuget-version: 'latest'
+      - name: Push package to the Github Package Registry
+        run: |        
+         nuget sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/murunwas/index.json" -UserName murunwas -Password ${{ secrets.FILEMANAGER }}
+         nuget setApiKey ${{ secrets.FILEMANAGER }} -Source "GPR"
+         nuget push nupkg\*.nupkg -Source "GPR" -SkipDuplicate
