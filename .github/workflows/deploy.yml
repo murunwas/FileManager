@@ -58,3 +58,6 @@ jobs:
 
       - name: Push to GPR
         run: nuget push nupkg/*.nupkg -Source "GPR" -SkipDuplicate
+
+      - name: Push Package to Nuget
+        run: dotnet nuget push nupkg/*.nupkg -k ${{ secrets.GITHUBTOKEN }} -s https://api.nuget.org/v3/index.json
