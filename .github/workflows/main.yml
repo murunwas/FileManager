@@ -32,6 +32,6 @@ jobs:
          nuget-version: 'latest'
       - name: Push package to the Github Package Registry
         run: |        
-         nuget sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/murunwas/index.json" -UserName murunwas -Password ${{ secrets.FILEMANAGER }}
+         nuget sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/murunwas/index.json" -UserName murunwas -Password ${{ secrets.GITHUBTOKEN }}
          nuget setApiKey ${{ secrets.FILEMANAGER }} -Source "GPR"
          nuget push D:\a\FileManager\FileManager\FileManager\out\*.nupkg -Source "GPR" -SkipDuplicate
