@@ -1,0 +1,37 @@
+name: NuGet Generation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+    name: Update NuGet 
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@master
+
+#  latest image has .NET already installed!
+#      - name: Setup .NET environment
+#        uses: actions/setup-dotnet@v1
+#        with:
+#          dotnet-version: '2.2.105' 
+
+      - name: Build solution and generate NuGet package
+        run: |  
+          cd FileManager
+          dotnet pack -c Release -o out  
+
+      - name: Install NuGet client
+        uses: nuget/setup-nuget@v1
+        with:
+         nuget-api-key: ${{ secrets.FILEMANAGER }}
+         nuget-version: 'latest'
+      - name: Push package to the Github Package Registry
+        run: |        
+         nuget sources Add -Name "GPR" -Source "https://nuget.pkg.github.com/murunwas/index.json" -UserName murunwas -Password ${{ secrets.GITHUBTOKEN }}
+         nuget setApiKey ${{ secrets.FILEMANAGER }} -Source "GPR"
+         nuget push D:\a\FileManager\FileManager\FileManager\out\*.nupkg -Source "GPR" -SkipDuplicate
