@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DateManager\DateManager.csproj" />
     <ProjectReference Include="..\FileManager\FileManager.csproj" />
   </ItemGroup>
 

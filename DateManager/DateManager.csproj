@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Murunwas.DateManager</PackageId>
+    <Description>This library  extends the date extensions.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/murunwas/FileManager</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/murunwas/FileManager</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>
