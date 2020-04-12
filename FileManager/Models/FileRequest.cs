@@ -6,8 +6,7 @@ namespace FileManager.Models
 {
     public class FileRequest
     {
-        public string FolderPath { get; set; }
-        public string[] Filters { get; set; }
-        public bool IsRecursive { get; set; }
+        public string[] Filters { get; set; }= new string[] { "jpg", "jpeg", "png", "gif", "tiff", "bmp", "svg" };
+        public bool IsRecursive { get; set; } = false;
     }
 }

@@ -9,6 +9,17 @@ namespace FileManager
 {
     public class Manager : IManager
     {
+        public string BytesToString(long byteCount)
+        {
+            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + suf[place];
+        }
+
         public async Task<bool> CreateNewDirAsync(string path)
         {
 			try
@@ -68,17 +79,22 @@ namespace FileManager
             return await Task.FromResult(myFiles);
         }
 
-        public async Task<string[]> GetFilesFromFolderAsync(FileRequest request)
+        public async Task<string[]> GetFilesFromFolderAsync(string path, FileRequest request=null)
         {
-            if (!await ExistAsync(request.FolderPath))
+            if (!await ExistAsync(path))
             {
-                throw new ArgumentNullException($"{nameof(request.FolderPath)} does not exist.");
+                throw new ArgumentNullException($"{nameof(path)} does not exist.");
             }
+            if (request==null)
+            {
+                request = new FileRequest();
+            }
+
             List<string> filesFound = new List<string>();
             var searchOption = request.IsRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             foreach (var filter in request.Filters)
             {
-                filesFound.AddRange(Directory.GetFiles(request.FolderPath, String.Format("*.{0}", filter), searchOption));
+                filesFound.AddRange(Directory.GetFiles(path, String.Format("*.{0}", filter), searchOption));
             }
             return await Task.FromResult(filesFound.ToArray());
         }

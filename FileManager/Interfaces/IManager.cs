@@ -17,9 +17,9 @@ namespace FileManager.Interfaces
 
         Task<string[]> GetFilesAsync(string path);
 
-        Task<string[]> GetFilesFromFolderAsync(FileRequest request);
+        Task<string[]> GetFilesFromFolderAsync(string path,FileRequest request=null);
 
-
+        string BytesToString(long byteCount);
 
 
 
