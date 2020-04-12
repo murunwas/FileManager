@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FileManager.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FileManager.Interfaces
@@ -14,7 +16,10 @@ namespace FileManager.Interfaces
         Task<string[]> GetDirectoriesAsync(string path);
 
         Task<string[]> GetFilesAsync(string path);
-        
+
+        Task<string[]> GetFilesFromFolderAsync(FileRequest request);
+
+
 
 
 

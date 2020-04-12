@@ -68,6 +68,21 @@ namespace FileManager
             return await Task.FromResult(myFiles);
         }
 
+        public async Task<string[]> GetFilesFromFolderAsync(FileRequest request)
+        {
+            if (!await ExistAsync(request.FolderPath))
+            {
+                throw new ArgumentNullException($"{nameof(request.FolderPath)} does not exist.");
+            }
+            List<string> filesFound = new List<string>();
+            var searchOption = request.IsRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            foreach (var filter in request.Filters)
+            {
+                filesFound.AddRange(Directory.GetFiles(request.FolderPath, String.Format("*.{0}", filter), searchOption));
+            }
+            return await Task.FromResult(filesFound.ToArray());
+        }
+
         public async Task<string[]> GetLogicalDriveAsync()
         {
             string[] drives = Directory.GetLogicalDrives();
